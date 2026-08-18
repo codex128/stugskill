@@ -6,8 +6,13 @@ const INCOMING = 'STUG_INCOMING_TRAFFIC';
 
 const START_MU = 25.0;
 
-function createNewRating() {
-    return {mu: START_MU, sigma: START_MU / 3};
+function computeInGameRank(xp) {
+    return 0.025 * Math.sqrt(xp);
+}
+
+function createNewRating(xp) {
+    var mu = computeInGameRank(xp) * (80 / 350);
+    return {mu: mu, sigma: mu / 3};
 }
 
 function injectScript(name, func) {
@@ -89,7 +94,7 @@ async function updatePlayerRatings(data) {
             var storedRating = await browser.storage.local.get(key);
             //storedRating = storedRating[key];
             if (storedRating.mu === undefined) {
-                storedRating = createNewRating();
+                storedRating = createNewRating(pdata.xp);
             }
             pdata.mu = storedRating.mu;
             pdata.sigma = storedRating.sigma;
