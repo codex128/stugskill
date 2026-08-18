@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack && cp src/manifest.json dist/",
-    "start": "webpack --watch & web-ext run --source-dir=dist"
+    "start": "cp src/manifest.json dist/ && webpack --watch & web-ext run --source-dir=dist && zip -r stugskill.zip dist/"
   },
   "keywords": [],
   "author": "codex",
