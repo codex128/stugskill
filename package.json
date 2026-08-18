@@ -1,0 +1,21 @@
+{
+  "name": "stugskill",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack && cp src/manifest.json dist/",
+    "start": "webpack --watch & web-ext run --source-dir=dist"
+  },
+  "keywords": [],
+  "author": "codex",
+  "license": "BSD-3",
+  "type": "commonjs",
+  "dependencies": {
+    "openskill": "^5.0.1",
+    "web-ext": "^10.6.0",
+    "webpack": "^5.109.2",
+    "webpack-cli": "^7.2.2"
+  }
+}
