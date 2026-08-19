@@ -5,11 +5,26 @@
   "content_scripts": [
     {
       "matches": ["https://stug.io/*"],
-      "js": ["bundle.js"],
+      "js": ["game.bundle.js"],
       "run_at": "document_start"
     }
   ],
   "permissions": [
     "storage"
-  ]
+  ],
+  "sidebar_action": {
+    "default_title": "Stug OS Leaderboard",
+    "default_panel": "leaderboard.html",
+    "default_icon": "icon.png"
+  },
+  "icons": {
+    "32": "icon.png"
+  },
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      }
+    }
+  }
 }

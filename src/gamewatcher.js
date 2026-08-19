@@ -86,15 +86,22 @@ async function updatePlayerRatings(data) {
     // update OS for each player in this gamelet
     var teams = [[], []];
     var now = Date.now();
+    var trackedPlayerList = null;
     for (var i = 0; i < data[1].players.length; i++) {
         var pdata = data[1].players[i];
         console.log("stugioplayer: getting " + pdata.name);
         if (pdata.team !== null && !pdata.isBot) {
             const key = "stugioplayer_" + pdata.name;
             var storedRating = await browser.storage.local.get(key);
-            //storedRating = storedRating[key];
             if (storedRating.mu === undefined) {
                 storedRating = createNewRating(pdata.xp);
+                if (trackedPlayerList === null) {
+                    trackedPlayerList = await browser.storage.local.get();
+                    if (trackedPlayerList.length === undefined) {
+                        trackedPlayerList = [];
+                    }
+                }
+                trackedPlayerList.push(pdata.name);
             }
             pdata.mu = storedRating.mu;
             pdata.sigma = storedRating.sigma;
@@ -113,6 +120,9 @@ async function updatePlayerRatings(data) {
     }
     console.log("ratings updated successfully.");
     browser.storage.local.set(ratingsToSave);
+    if (trackedPlayerList !== null) {
+        browser.storage.local.set({players: trackedPlayerList});
+    }
 }
 
 const actions = {

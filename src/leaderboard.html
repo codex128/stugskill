@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body id="body">
+        <h1>Stug OS Leaderboard</h1>
+        <input type="text" id="name-filter">
+        <button id="fetch-players">Fetch</button>
+        <table id="player-table"></table>
+        <script src="leaderboard.bundle.js" type="text/javascript">
+/*
+            console.log("hello from gui!");
+
+            const PLAYER_TABLE_COLUMNS = ["Player", "OS"];
+
+            console.log("initializing gui");
+
+            var debug = document.createElement("span");
+            debug.textContent = "hello world";
+            document.getElementById("body").appendChild(debug);
+
+            async function updatePlayerTable(filter) {
+                console.log("updating player table...");
+                var ptable = document.getElementById("player-table");
+                ptable.replaceChildren(); // remove all children
+                var header = document.createElement("tr");
+                for (var i = 0; i < PLAYER_TABLE_COLUMNS; i++) {
+                    var column = document.createElement("th");
+                    column.textContent = PLAYER_TABLE_COLUMNS[i];
+                    header.appendChild(column);
+                }
+                ptable.appendElement(header);
+                var players = await browser.storage.local.get("players");
+                console.log(players);
+                var rows = [];
+                for (var i = 0; i < players.length; i++) {
+                    if (filter && !filter(players[i])) {
+                        continue;
+                    }
+                    var rating = await browser.storage.local.get("stugioplayer_" + players[i]);
+                    rows.push({name: players[i], mu: rating.mu, sigma: rating.sigma});
+                }
+                rows.sort((a, b) => b.os - a.os);
+                console.log(rows);
+                for (var i = 0; i < rows.length; i++) {
+                    var row = document.createElement("tr");
+                    var name = document.createElement("th");
+                    name.textContent = rows[i].name;
+                    var os = document.createElement("th");
+                    os.textContent = Math.floor(rows[i].mu);
+                    row.appendChild(name);
+                    row.appendChild(os);
+                    ptable.appendChild(row);
+                }
+            }
+
+            console.log("adding click listener");
+            document.getElementById("fetch-players").onClick = function() {
+                var name = document.getElementById("name-filter").value;
+                updatePlayerTable(p => {
+                    return true;
+                });
+            };
+*/
+        </script>
+    </body>
+</html>
