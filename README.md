@@ -11,15 +11,14 @@ Evaluates the openskill (OS) of all the players in your lobby. Note that this is
 5. Select "Load Temporary Add-on".
 6. Select `manifest.js` from the extracted folder.
 
-Stug skill will then run whenever you run stug.io. To also view the OS ratings of all rated players, selected "Inspect" in the stugskill temporary add-on, go to "storage", and select the "extension storage".
+Stug skill will then run whenever you run stug.io. To view OS by player, open the firefox side-bar. All rated players are listed in the stugskill tab. You can also filter by game mode and player name. The UI does not update automatically to new data. You have to click "fetch" to load newer data.
 
-You may also download the source code yourself and build it from source. Doing so requires having `npm` set up.
+You may also download the source code yourself and build it from source. Doing so requires having `git` and `npm` set up.
 
 ```bash
 cd path/to/projects
 git clone https://github.com/codex128/stugskill.git
-npm install openskill
-npm run start
+npm run build
 ```
 
 This will open a new firefox instance with the extension already loaded.
