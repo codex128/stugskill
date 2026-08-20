@@ -26,5 +26,13 @@
         "default": "Ctrl+Shift+Y"
       }
     }
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "stugskill2@github.codex128.com",
+      "data_collection_permissions": {
+        "required": ["websiteContent"]
+      }
+    }
   }
 }

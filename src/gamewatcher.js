@@ -15,6 +15,10 @@ function createNewRating(xp) {
     return {mu: mu, sigma: mu / 3};
 }
 
+function getPlayerRatingKey(gamemode, player) {
+    return gamemode + "_stugplayer_" + player;
+}
+
 function injectScript(name, func) {
     const content = `(${func.toString()})();`;
     console.log("injecting script: " + content);
@@ -66,19 +70,28 @@ function eventCapture() {
 // inject event listener to receive events
 injectScript("eventCapture", eventCapture);
 
-var teamScores = [0, 0];
+console.log("hello from extension!");
+
+var teamScores = [10000, 10000];
 
 async function updatePlayerRatings(data) {
+    if (data[1].roundEnded) {
+        teamScores = [10000, 10000];
+        return;
+    }
     if (data[1].teams[0].players === 0 || data[1].teams[1].players === 0) {
         return;
     }
+    const gamemode = data[1].gamemode;
     const deltaScores = [
         data[1].teams[0].score - teamScores[0],
         data[1].teams[1].score - teamScores[1]
     ];
     teamScores[0] = data[1].teams[0].score;
     teamScores[1] = data[1].teams[1].score;
-    console.log("stugioplayer, update ratings 2");
+    if (deltaScores[0] < 0 || deltaScores[1] < 0) {
+        return;
+    }
     if (deltaScores[0] === 0 && deltaScores[1] === 0) {
         return;
     }
@@ -89,19 +102,20 @@ async function updatePlayerRatings(data) {
     var trackedPlayerList = null;
     for (var i = 0; i < data[1].players.length; i++) {
         var pdata = data[1].players[i];
-        console.log("stugioplayer: getting " + pdata.name);
+        console.log("stugplayer: getting " + pdata.name);
         if (pdata.team !== null && !pdata.isBot) {
-            const key = "stugioplayer_" + pdata.name;
+            const key = getPlayerRatingKey(gamemode, pdata.name);
             var storedRating = await browser.storage.local.get(key);
             if (storedRating.mu === undefined) {
                 storedRating = createNewRating(pdata.xp);
                 if (trackedPlayerList === null) {
-                    trackedPlayerList = await browser.storage.local.get();
-                    if (trackedPlayerList.length === undefined) {
-                        trackedPlayerList = [];
+                    trackedPlayerList = await browser.storage.local.get("players");
+                    trackedPlayerList = trackedPlayerList["players"];
+                    if (trackedPlayerList === undefined) {
+                        trackedPlayerList = {};
                     }
                 }
-                trackedPlayerList.push(pdata.name);
+                trackedPlayerList[pdata.name] = true;
             }
             pdata.mu = storedRating.mu;
             pdata.sigma = storedRating.sigma;
@@ -112,7 +126,7 @@ async function updatePlayerRatings(data) {
     var ratingsToSave = {};
     for (var i = 0; i < teams.length; i++) {
         for (var j = 0; j < teams[i].length; j++) {
-            ratingsToSave["stugioplayer_" + teams[i][j].name] = {
+            ratingsToSave[getPlayerRatingKey(gamemode, teams[i][j].name)] = {
                 mu: updatedRatings[i][j].mu,
                 sigma: updatedRatings[i][j].sigma
             };
@@ -137,6 +151,7 @@ window.addEventListener('message', (event) => {
         return;
     }
     var payload = event.data.payload.toString();
+    //console.log("intercepted: " + payload);
     try {
         payload = JSON.parse(payload.substring(payload.indexOf("[")));
     } catch (e) {
@@ -152,4 +167,6 @@ window.addEventListener('message', (event) => {
     if (a) a(payload);
 });
 
+// fix known bug in firefox that doesn't update local storage
+browser.storage.local.onChanged.addListener(() => {});
 

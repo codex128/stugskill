@@ -5,8 +5,13 @@ const PLAYER_TABLE_COLUMNS = ["Player", "OS"];
 
 console.log("initializing gui");
 
+function getPlayerRatingKey(gamemode, player) {
+    return gamemode + "_stugplayer_" + player;
+}
+
 async function updatePlayerTable(filter) {
     console.log("updating player table...");
+    var gamemode = document.getElementById("gamemode").value;
     var ptable = document.getElementById("player-table");
     ptable.replaceChildren(); // remove all children
     var header = document.createElement("tr");
@@ -21,14 +26,19 @@ async function updatePlayerTable(filter) {
     players = players.players;
     console.log(players);
     var rows = [];
-    for (var i = 0; i < players.length; i++) {
-        if (filter && !filter(players[i])) {
-            continue;
+    if (players !== undefined) {
+        for (var name in players) {
+            if (filter && !filter(name)) {
+                continue;
+            }
+            console.log("getting player stats: " + name);
+            var key = getPlayerRatingKey(gamemode, name);
+            var rating = await browser.storage.local.get(key);
+            rating = rating[key];
+            if (rating !== undefined) {
+                rows.push({name: name, mu: rating.mu, sigma: rating.sigma});
+            }
         }
-        console.log("getting player stats: " + players[i]);
-        var rating = await browser.storage.local.get("stugioplayer_" + players[i]);
-        rating = rating["stugioplayer_" + players[i]];
-        rows.push({name: players[i], mu: rating.mu, sigma: rating.sigma});
     }
     console.log(rows);
     rows.sort((a, b) => b.mu - a.mu);
